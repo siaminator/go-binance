@@ -227,6 +227,22 @@ func WsAggTradeServe(symbol string, handler WsAggTradeHandler, errHandler ErrHan
 	return wsServe(cfg, wsHandler, errHandler)
 }
 
+// WsAggTradeServe serve websocket aggregate handler with a symbol for futures
+func WsFutureAggTradeServe(symbol string, handler WsAggTradeHandler, errHandler ErrHandler) (doneC, stopC chan struct{}, err error) {
+	endpoint := fmt.Sprintf("%s/%s@aggTrade", baseFutureURL, strings.ToLower(symbol))
+	cfg := newWsConfig(endpoint)
+	wsHandler := func(message []byte) {
+		event := new(WsAggTradeEvent)
+		err := json.Unmarshal(message, event)
+		if err != nil {
+			errHandler(err)
+			return
+		}
+		handler(event)
+	}
+	return wsServe(cfg, wsHandler, errHandler)
+}
+
 // WsAggTradeEvent define websocket aggregate trade event
 type WsAggTradeEvent struct {
 	Event                 string `json:"e"`
