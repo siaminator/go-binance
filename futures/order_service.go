@@ -7,20 +7,22 @@ import (
 
 // CreateOrderService create order
 type CreateOrderService struct {
-	c                *Client
-	symbol           string
-	side             SideType
-	positionSide     *PositionSideType
-	orderType        OrderType
-	timeInForce      *TimeInForceType
-	quantity         string
-	reduceOnly       *bool
-	price            *string
-	newClientOrderID *string
-	stopPrice        *string
-	workingType      *WorkingType
-	activationPrice  *string
-	callbackRate     *string
+	c                    *Client
+	symbol               string
+	side                 SideType
+	positionSide         *PositionSideType
+	orderType            OrderType
+	timeInForce          *TimeInForceType
+	quantity             string
+	reduceOnly           *bool
+	price                *string
+	newClientOrderID     *string
+	stopPrice            *string
+	workingType          *WorkingType
+	activationPrice      *string
+	callbackRate         *string
+	newOrderResponseType *NewOrderRespType
+	closePosition        *bool
 }
 
 // Symbol set symbol
@@ -89,6 +91,18 @@ func (s *CreateOrderService) WorkingType(workingType WorkingType) *CreateOrderSe
 	return s
 }
 
+// NewOrderResponseType set newOrderResponseType
+func (s *CreateOrderService) NewOrderResponseType(newOrderResponseType NewOrderRespType) *CreateOrderService {
+	s.newOrderResponseType = &newOrderResponseType
+	return s
+}
+
+// ClosePosition set closePosition in Hedge mode
+func (s *CreateOrderService) ClosePosition(closePosition bool) *CreateOrderService {
+	s.closePosition = &closePosition
+	return s
+}
+
 // ActivationPrice set activationPrice
 func (s *CreateOrderService) ActivationPrice(activationPrice string) *CreateOrderService {
 	s.activationPrice = &activationPrice
@@ -133,6 +147,12 @@ func (s *CreateOrderService) createOrder(ctx context.Context, endpoint string, o
 	}
 	if s.workingType != nil {
 		m["workingType"] = *s.workingType
+	}
+	if s.newOrderResponseType != nil {
+		m["newOrderResponseType"] = *s.newOrderResponseType
+	}
+	if s.closePosition != nil {
+		m["closePosition"] = *s.closePosition
 	}
 	if s.activationPrice != nil {
 		m["activationPrice"] = *s.activationPrice
