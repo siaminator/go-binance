@@ -32,10 +32,7 @@ var wsServe = func(cfg *WsConfig, handler WsHandler, errHandler ErrHandler) (don
 	stopC = make(chan struct{})
 	go func() {
 		defer func() {
-			cerr := c.Close()
-			if cerr != nil {
-				errHandler(cerr)
-			}
+			_ = c.Close()
 		}()
 		defer close(doneC)
 		if WebsocketKeepalive {
